@@ -1,8 +1,9 @@
 import Link from 'next/link';
-import {Monitor,WifiOff,ExternalLink} from 'lucide-react';
+import {Monitor,ExternalLink} from 'lucide-react';
 import {session} from '@/lib/auth';
 import {all,named,str,type Row} from '@/lib/data';
 import {Heading,Badge,Empty} from '@/components/ui';
+import {ScreenShare} from '@/components/screen-share';
 
 function deviceLabel(device:Row){return `${str(device,'brand')} ${str(device,'model')}`.trim()||'Dispositivo';}
 
@@ -25,7 +26,7 @@ export default async function ControlRoom(){
     const account=accounts.find(a=>a.device_id===device.id&&(!assignment||a.project_id===assignment.project_id));
     return <section className="control-card card" key={str(device,'id')}>
      <div className="control-card-head"><div><span className="eyebrow">{str(device,'code')}</span><h2>{deviceLabel(device)}</h2></div><Badge>{str(device,'status')}</Badge></div>
-     <div className="remote-screen" aria-label={`Vista remota de ${str(device,'code')}`}><WifiOff size={24}/><strong>Sin conexión remota</strong><span>La pantalla del dispositivo no está disponible</span></div>
+     <ScreenShare deviceCode={str(device,'code')}/>
      <dl className="control-facts"><div><dt>Responsable</dt><dd>{assignment?named(members,assignment.user_id):'Sin asignar'}</dd></div><div><dt>Proyecto</dt><dd>{project||'Sin proyecto'}</dd></div><div><dt>Perfil</dt><dd>{account?`${str(account,'platform')} · ${str(account,'name')}`:'Sin perfil asociado'}</dd></div><div><dt>Datos técnicos</dt><dd>{device.battery===null?'Sin lectura registrada':`${device.battery}% batería`}</dd></div></dl>
      <div className="control-card-actions"><Link className="secondary button" href={`/devices/${str(device,'id')}`}>Abrir ficha <ExternalLink size={14}/></Link><span className="muted small">Vista remota: pendiente</span></div>
     </section>;
