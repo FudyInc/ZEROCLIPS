@@ -1,0 +1,5 @@
+import Link from 'next/link';
+export function Heading({eyebrow='OPERACIÓN',title,description,children}:{eyebrow?:string;title:string;description:string;children?:React.ReactNode}){return <div className="page-heading"><div><span className="eyebrow">{eyebrow}</span><h1>{title}<span className="title-dot">.</span></h1><p>{description}</p></div><div className="heading-actions">{children}</div></div>;}
+export function Badge({children}:{children:React.ReactNode}){const s=String(children);return <span className={`badge ${['disponible','completada','aprobado','resuelta'].includes(s)?'green':['mantenimiento','alta','crítica','abierta'].includes(s)?'amber':s==='baja'?'gray':'blue'}`}><i/>{children}</span>;}
+export function Empty({text='Todavía no hay registros. Crea el primero para comenzar.'}:{text?:string}){return <div className="empty"><div>+</div><strong>Todo empieza aquí</strong><p>{text}</p></div>;}
+export function Stat({label,value,href,hint}:{label:string;value:string|number;href:string;hint:string}){return <Link href={href} className="stat"><div>{label}<span>↗</span></div><strong>{value}</strong><small>{hint}</small></Link>;}

@@ -1,0 +1,5 @@
+import {createClient} from '@supabase/supabase-js';
+if(process.env.ZEROCLIPS_DEMO_DATABASE!=='YES_ISOLATED_DEMO')throw new Error('Solo ejecutar en un proyecto Supabase separado: ZEROCLIPS_DEMO_DATABASE=YES_ISOLATED_DEMO');
+const client=createClient(process.env.NEXT_PUBLIC_SUPABASE_URL,process.env.SUPABASE_SERVICE_ROLE_KEY,{auth:{persistSession:false}});
+const {count,error}=await client.from('devices').select('id',{count:'exact',head:true});if(error)throw error;if(count)throw new Error('La demostración requiere inventario vacío.');
+const result=await client.from('devices').insert([{code:'DEMO-001',brand:'Apple',model:'iPhone de demostración',os:'iOS',storage_gb:128,location:'DEMO · Estudio',tags:['DEMO'],notes:'Datos de demostración. No es un dispositivo operativo.'},{code:'DEMO-002',brand:'Samsung',model:'Android de demostración',os:'Android',storage_gb:256,location:'DEMO · Edición',tags:['DEMO'],notes:'Datos de demostración. No es un dispositivo operativo.'}]);if(result.error)throw result.error;console.log('Dos dispositivos DEMO creados en el proyecto aislado.');

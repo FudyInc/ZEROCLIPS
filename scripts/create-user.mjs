@@ -1,0 +1,14 @@
+import {createClient} from '@supabase/supabase-js';
+import {createInterface} from 'node:readline/promises';
+const [email,name,role='operador']=process.argv.slice(2);
+if(!email||!name||!['administrador','supervisor','operador'].includes(role))throw new Error('Uso: npm run user:create -- correo nombre [administrador|supervisor|operador]');
+if(!process.env.NEXT_PUBLIC_SUPABASE_URL||!process.env.SUPABASE_SERVICE_ROLE_KEY)throw new Error('Configura .env.local con URL y clave service_role (solo servidor).');
+const rl=createInterface({input:process.stdin,output:process.stdout});
+console.log('Se enviará una invitación por correo para establecer el acceso; requiere SMTP configurado.');
+const confirmation=await rl.question(`Invitar a ${email} como ${role}? [sí/no] `);rl.close();if(!['sí','si'].includes(confirmation.toLowerCase()))process.exit(0);
+const client=createClient(process.env.NEXT_PUBLIC_SUPABASE_URL,process.env.SUPABASE_SERVICE_ROLE_KEY,{auth:{persistSession:false,autoRefreshToken:false}});
+const {data,error}=await client.auth.admin.inviteUserByEmail(email,{data:{name},redirectTo:new URL('/auth/confirm',process.env.NEXT_PUBLIC_APP_URL||'http://localhost:3000').href});
+if(error)throw error;
+const result=await client.from('members').update({role}).eq('id',data.user.id);
+if(result.error)throw result.error;
+console.log(`Usuario invitado: ${data.user.id}. Si es el primer administrador, ya puede completar su acceso desde el correo.`);

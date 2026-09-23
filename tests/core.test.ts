@@ -1,0 +1,12 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';
+import {validateCsv,exportCsv} from '../src/lib/csv';import {sumMoney} from '../src/lib/format';import {schemas,receiveSchema} from '../src/lib/validation';import {UnconfiguredProvider} from '../src/lib/mdm';
+test('CSV informa filas inválidas y duplicados internos y existentes',()=>{const csv='code,brand,model,os,storage_gb,currency\nZC-1,Apple,iPhone,iOS,128,CLP\nzc-1,Apple,iPhone,iOS,128,CLP\nZC-2,Apple,iPhone,invalid,128,CLP\nZC-3,Samsung,S,Android,128,USD';const result=validateCsv(csv,[{code:'ZC-3',serial:'',imei:''}]);assert.equal(result.valid.length,1);assert.deepEqual(result.errors.map(e=>e.row),[3,4,5]);});
+test('CSV neutraliza fórmulas',()=>{assert.match(exportCsv([{code:'=1+1',notes:'+SUM(A1)'}]),/'=1\+1/);assert.match(exportCsv([{code:'=1+1',notes:'+SUM(A1)'}]),/'\+SUM/);});
+test('Dinero usa suma decimal exacta y mantiene monedas separadas',()=>{assert.deepEqual(sumMoney([{amount:'0.10',currency:'USD'},{amount:'0.20',currency:'USD'},{amount:'10',currency:'CLP'}]),{USD:'0.30',CLP:'10.00'});});
+test('Validación rechaza dinero negativo, fecha sin zona e IMEI inválido',()=>{assert.equal(schemas.expense.safeParse({device_id:crypto.randomUUID(),kind:'reparación',amount:'-1',currency:'CLP',description:'x'}).success,false);assert.equal(schemas.task.safeParse({title:'a',project_id:crypto.randomUUID(),owner_id:crypto.randomUUID(),priority:'alta',due_at:'2026-09-22T12:00'}).success,false);assert.equal(schemas.device.safeParse({code:'A',brand:'A',model:'A',os:'iOS',storage_gb:128,imei:'123',currency:'CLP'}).success,false);});
+test('Recepciones requieren UUID idempotente y unidades válidas',()=>{assert.equal(receiveSchema.safeParse({purchase:crypto.randomUUID(),request_id:'x',units:[]}).success,false);});
+test('Proveedor desconectado no simula acciones',async()=>{const provider=new UnconfiguredProvider();assert.equal(provider.capability(),'pendiente de configuración');await assert.rejects(()=>provider.execute(),/pendiente/);});
+import {toInstant,toLocal} from '../src/lib/dates';
+import {multiplyMoney} from '../src/lib/format';
+test('Fechas conservan zona y rechazan horario inexistente',()=>{assert.equal(toInstant('2026-01-15T15:00','America/Santiago'),'2026-01-15T18:00:00Z');assert.equal(toLocal('2026-01-15T18:00:00Z','America/Santiago'),'2026-01-15T15:00');assert.throws(()=>toInstant('2026-03-08T02:30','America/New_York'));});
+test('Presupuesto conserva aritmética decimal exacta',()=>{assert.equal(multiplyMoney('0.10',3),'0.30');});

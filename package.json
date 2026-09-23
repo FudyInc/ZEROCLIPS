@@ -1,0 +1,43 @@
+{
+  "name": "zeroclips",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build --webpack",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "test:db": "node --import tsx scripts/test-db.ts",
+    "test:ui": "playwright test",
+    "user:create": "node --env-file=.env.local scripts/create-user.mjs",
+    "demo": "node --env-file=.env.local scripts/seed-demo.mjs"
+  },
+  "dependencies": {
+    "@js-temporal/polyfill": "0.5.1",
+    "@supabase/ssr": "0.12.7",
+    "@supabase/supabase-js": "2.117.0",
+    "lucide-react": "1.47.0",
+    "next": "16.3.6",
+    "papaparse": "5.7.0",
+    "qrcode": "1.5.4",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.8",
+    "@playwright/test": "1.63.0",
+    "@types/node": "26.6.2",
+    "@types/papaparse": "5.5.2",
+    "@types/qrcode": "1.5.6",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "node": "22.23.2",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2"
+  },
+  "engines": {
+    "node": "22.x"
+  }
+}
