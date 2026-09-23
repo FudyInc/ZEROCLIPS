@@ -1,7 +1,9 @@
 import 'server-only';
 import {redirect} from 'next/navigation';
+import {previewEnabled,previewMember} from './preview';
 import {db, configured} from './supabase';
 export async function session() {
+ if(previewEnabled())return {client:null,user:null,member:previewMember,manager:true};
  if(!configured()) redirect('/setup');
  const client=await db();
  const {data:{user},error}=await client.auth.getUser();

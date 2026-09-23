@@ -2,6 +2,12 @@
 
 Aplicación en español para administrar flota iOS/Android y operaciones de clipping. Next.js 16 + TypeScript, Supabase PostgreSQL/Auth y despliegue en Vercel. Se eligió este stack porque el repositorio estaba vacío y el propietario dispone de Supabase, GitHub y Vercel.
 
+## Acceso temporal sin login
+
+`ZEROCLIPS_PREVIEW_MODE=true` habilita entrada directa al panel y todas las secciones, incluso si Supabase no está configurado. `/login` ofrece acceso opcional por correo y Google, debajo del formulario, además de un enlace para continuar sin iniciar sesión. Este modo usa exclusivamente datos ficticios del código, con banner de demostración y sin consultas a Supabase. Las escrituras se rechazan en servidor y sus botones están desactivados; el CSV contiene únicamente ejemplos. No se eliminan ni relajan las políticas RLS de la base real.
+
+Para volver al modo operativo, cambia la variable a `false` y vuelve a desplegar una vez que hayas aplicado las migraciones y creado usuarios. No existe un parámetro de URL que permita activar este modo. Comprueba ambos modos con `npm run test:preview` y `npm run test:ui`.
+
 ## Inicio local
 
 Requiere Node.js 22 y npm. Usa `.nvmrc` si tienes nvm.
@@ -53,7 +59,7 @@ Importa `FudyInc/ZEROCLIPS` desde GitHub. Framework: Next.js; directorio raíz: 
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 - `NEXT_PUBLIC_APP_URL=https://tu-dominio` (usado para los QR)
 
-No necesitas service_role en Vercel para la aplicación. Aplica la migración antes de usar el despliegue. Actualiza Site URL, invitaciones y redirecciones en Supabase. Vercel proporciona HTTPS. Cada Preview debe usar un proyecto Supabase de pruebas separado si se van a escribir datos. Las migraciones de producción no se ejecutan automáticamente en cada build.
+Las consultas operativas no necesitan service_role. La asignación automática del administrador designado sí requiere `SUPABASE_SERVICE_ROLE_KEY` exclusivamente en servidor, junto a `ZEROCLIPS_ADMIN_EMAIL`. Aplica la migración antes de usar el despliegue. Actualiza Site URL, invitaciones y redirecciones en Supabase. Vercel proporciona HTTPS. Cada Preview debe usar un proyecto Supabase de pruebas separado si se van a escribir datos. Las migraciones de producción no se ejecutan automáticamente en cada build.
 
 ## Recorrido de aceptación
 
@@ -65,6 +71,8 @@ No necesitas service_role en Vercel para la aplicación. Aplica la migración an
 6. Crea una tarea con vencimiento en la zona configurada. Crea un clip con material; al publicarlo registra URL y fecha efectiva. Las métricas son observaciones manuales con fuente y fecha.
 7. Registra una incidencia. Supervisor o administrador la resuelve con descripción y costo opcional; el gasto se registra una sola vez. Consulta ficha de equipo para asignaciones, perfiles, incidencias, costos y bitácora.
 8. Reinicia el servidor: los datos siguen en Supabase. Ingresa con otro operador: RLS impide acceder a recursos ajenos incluso mediante API directa.
+
+Consulta [docs/GOOGLE_AUTH.md](docs/GOOGLE_AUTH.md) para habilitar Google y la asignación del administrador designado.
 
 ## Seguridad y modelo
 

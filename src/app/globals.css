@@ -5,3 +5,7 @@
 
 .sidebar{overflow-y:auto}.sidebar nav{flex-shrink:0}.sidebar-bottom{flex-shrink:0}
 @media(max-width:480px){.phone-art{display:none}.overview-banner{min-height:220px}.overview-banner p{max-width:260px}}
+
+.preview-banner{display:flex;flex-direction:column;gap:4px;padding:14px 18px;margin-bottom:24px;border:1px solid #e7dcba;border-radius:9px;background:#fff9e9;color:#806222;font-size:11px}.preview-banner strong{font-size:12px}
+
+.optional-login{display:block;font-size:10px;color:var(--purple);margin-top:13px}.mobile-optional-login{display:none}.auth-divider{display:flex;align-items:center;gap:12px;color:#9296a3;font-size:11px;margin:10px 0}.auth-divider:before,.auth-divider:after{content:"";flex:1;border-top:1px solid var(--line)}.auth-form .google-button{margin:4px 0 10px}.guest-entry{width:100%;margin:5px 0 10px}@media(max-width:640px){.mobile-optional-login{display:block;font-size:10px;color:var(--purple)}}

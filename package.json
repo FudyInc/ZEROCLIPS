@@ -11,7 +11,8 @@
     "test:db": "node --import tsx scripts/test-db.ts",
     "test:ui": "playwright test",
     "user:create": "node --env-file=.env.local scripts/create-user.mjs",
-    "demo": "node --env-file=.env.local scripts/seed-demo.mjs"
+    "demo": "node --env-file=.env.local scripts/seed-demo.mjs",
+    "test:preview": "playwright test --config playwright.preview.config.ts"
   },
   "dependencies": {
     "@js-temporal/polyfill": "0.5.1",
