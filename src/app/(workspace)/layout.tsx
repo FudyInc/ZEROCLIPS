@@ -1,2 +1,9 @@
-/bin/bash: -c: line 1: syntax error near unexpected token `('
-/bin/bash: -c: line 1: `python -c "import pathlib; print(pathlib.Path("src/app/(workspace)/layout.tsx").read_text())"'
+import Link from 'next/link';
+import {previewEnabled} from '@/lib/preview';
+import {PreviewProvider} from '@/components/preview-context';
+import {session} from '@/lib/auth';
+import {logout} from '@/app/actions';
+import {Navigation} from '@/components/navigation';
+import {ScreenShareProvider} from '@/components/screen-share-context';
+export const dynamic='force-dynamic';
+export default async function Workspace({children}:{children:React.ReactNode}){const {member,manager}=await session();const preview=previewEnabled();return <PreviewProvider enabled={preview}><ScreenShareProvider><div className="app-shell"><aside className="sidebar"><a href="/" className="wordmark">ZERO<span>CLIPS</span><i/></a><div className="workspace-label">ESPACIO DE TRABAJO</div><Navigation manager={manager}/><div className="sidebar-bottom"><div className="live-dot">Operación administrativa</div><small>MDM pendiente de configurar</small><div className="user"><div className="avatar">{member.name.slice(0,2).toUpperCase()}</div><div><strong>{member.name}</strong><small>{preview?'Vista previa':member.role}</small></div></div>{preview&&<Link className="optional-login" href="/login">Acceso opcional · correo o Google ↗</Link>}{!preview&&<form action={logout}><button className="logout">Cerrar sesión ↗</button></form>}</div></aside><main className="main"><header className="topbar"><span>Espacio <span className="muted">/</span> <strong>ZEROCLIPS</strong></span>{preview&&<Link className="mobile-optional-login" href="/login">Acceso opcional ↗</Link>}{!preview&&<form action={logout} className="mobile-logout"><button className="logout">Cerrar sesión ↗</button></form>}<span className="top-tag"><span className="dot"/> Operación</span></header><div className="content">{preview&&<div className="preview-banner" role="status"><strong>Demostración · acceso sin login</strong><span>Datos de ejemplo. Puedes recorrer las pantallas; guardar cambios estará disponible al conectar la base.</span></div>}{children}</div><footer>ZEROCLIPS <span>Control de flota y producción</span></footer></main></div></ScreenShareProvider></PreviewProvider>;}
